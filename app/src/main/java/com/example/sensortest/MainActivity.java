@@ -37,15 +37,13 @@ import java.util.regex.Pattern;
 
 import static android.os.HardwarePropertiesManager.DEVICE_TEMPERATURE_CPU;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity {
 
     private TextView textTemperatura;
     private TextView falloText;
-    private SensorManager mSensorManager;
-    private Sensor mTemperatura;
-    private Boolean sensorDisponible;
-    private int temperatura = 0;
+    HardwarePropertiesManager teste;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,45 +54,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         textTemperatura = findViewById(R.id.temperatura);
         falloText = findViewById(R.id.fallo);
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        /*float[] coreValues = new float[10];
-        //get how many cores there are from function
-        int numCores = getNumCores();
-        for(byte i = 0; i < numCores; i++)
-        {
-            coreValues[i] = readCore(i);
-            coreValues[i] = coreValues[i] * 100;
-            textTemperatura.append("NÚCLEOS " + coreValues[i] + "\n");
-        }*/
-
-        temp_cpu();
         Timer();
 
-        /*HardwarePropertiesManager hpm = getApplicationContext().getSystemService(HardwarePropertiesManager.class);
-        float[] celcius = hpm.getDeviceTemperatures(DEVICE_TEMPERATURE_CPU, HardwarePropertiesManager.TEMPERATURE_CURRENT);
 
-
-        textTemperatura.setText("TEMP BATTERY " + celcius.toString() +
-                "\n" + " TEMP CPU " + DEVICE_TEMPERATURE_CPU +
-                "\n" + " TEMP GPU " + HardwarePropertiesManager.DEVICE_TEMPERATURE_GPU +
-                "\n" + " TEMP SKIN" + HardwarePropertiesManager.DEVICE_TEMPERATURE_SKIN);*/
-
-
-        //Revisa si existe un sensor en el dispositivo
-        /*if (mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) !=null){
-            mTemperatura = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-            sensorDisponible = true;
-            falloText.setVisibility(View.GONE);
-        }else{
-            falloText.setText("Este dispositivo não possui sensor de temperatura");
-            textTemperatura.setVisibility(View.GONE);
-            sensorDisponible = false;
-        }
-
-        if (sensorDisponible){
-            mSensorManager.registerListener(this, mTemperatura, mSensorManager.SENSOR_DELAY_NORMAL);
-        }*/
+        //falloText.setText(String.valueOf(teste));
     }
 
     /**
@@ -242,23 +206,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        temperatura = (int) event.values[0];
-        textTemperatura.setText(temperatura + " °C");
-        
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
     public void Timer(){
         Timer timer = new Timer();
         Task task = new Task();
 
-        timer.schedule(task, 5000, 5000);
+        timer.schedule(task, 1000, 1000);
 
     }
 
@@ -269,30 +221,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 @Override
                 public void run() {
                     //Refresh Activity
-                    overridePendingTransition(0, 0);
-                    finish();
-                    overridePendingTransition(0, 0);
-                    startActivity(getIntent());
-                    overridePendingTransition(0, 0);
+                    temp_cpu();
                 }
             });
         }
     }
-    public void temp_cpu() {
-            /*RandomAccessFile reader = new RandomAccessFile("/sys/devices/system/cpu/cpu0/cpufreq/cpu_temp", "r");
-            String line = reader.readLine();
 
-            textTemperatura.setText(Integer.parseInt(line) / 1000);
-            textTemperatura.setText("TEMP BATTERY " + HardwarePropertiesManager.DEVICE_TEMPERATURE_BATTERY +
-                    "\n" + " TEMP CPU " + DEVICE_TEMPERATURE_CPU +
-                    "\n" + " TEMP GPU " + HardwarePropertiesManager.DEVICE_TEMPERATURE_GPU +
-                    "\n" + " TEMP SKIN" + HardwarePropertiesManager.DEVICE_TEMPERATURE_SKIN);*/
-
-        float tempo = cpuTemperature();
-        textTemperatura.setText(String.valueOf(tempo) + " Cº");
-
-
+    public void num_core(){
+        float[] coreValues = new float[10];
+        //get how many cores there are from function
+        int numCores = getNumCores();
+        for(byte i = 0; i < numCores; i++)
+        {
+            coreValues[i] = readCore(i);
+            coreValues[i] = coreValues[i] * 100;
+            textTemperatura.append("NÚCLEOS " + coreValues[i] + "\n");
+        }
     }
 
+    public void temp_battery(){}
 
+
+    public void temp_cpu() {
+        float tempo = cpuTemperature();
+        textTemperatura.setText(String.valueOf(tempo) + " Cº");
+    }
 }
