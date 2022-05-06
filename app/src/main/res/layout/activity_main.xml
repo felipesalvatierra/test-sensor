@@ -4,33 +4,102 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/temperatura"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:textColor="#FFC500"
-        android:textSize="30sp"
-        android:textStyle="bold"
+    <View
+        android:id="@+id/container_cpu"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
+        android:background="@drawable/container"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.338" />
+        app:layout_constraintVertical_bias="0.499" />
 
     <TextView
-        android:id="@+id/fallo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="204dp"
-        android:layout_marginBottom="56dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="#FFC500"
-        android:textSize="30sp"
-        android:textStyle="bold"/>
+        android:id="@+id/text_view_cpu"
+        android:layout_marginTop="15dp"
+        android:text=" Cpu temperature:"
+        android:paddingTop="8dp"
+        android:textSize="10dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity=""
+        android:layout_width="310dp"
+        android:background="@drawable/edt_layout"
+        android:layout_height="30dp"
+        android:textColorHint="@color/black"
+        android:drawableLeft="@drawable/ic_cpu_svgrepo_com"
+
+        app:layout_constraintStart_toStartOf="@id/container_cpu"
+        app:layout_constraintEnd_toEndOf="@id/container_cpu"
+        app:layout_constraintTop_toTopOf="@id/container_cpu"/>
+
+    <TextView
+        android:id="@+id/text_view_cpu2"
+        android:layout_marginTop="15dp"
+        android:text=" Baterry temperature:"
+        android:textSize="10dp"
+        android:paddingTop="8dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity=""
+        android:layout_width="310dp"
+        android:background="@drawable/edt_layout"
+        android:layout_height="30dp"
+        android:textColorHint="@color/black"
+        android:drawableLeft="@drawable/ic_battery_svgrepo_com"
+
+        app:layout_constraintStart_toStartOf="@id/container_cpu"
+        app:layout_constraintEnd_toEndOf="@id/container_cpu"
+        app:layout_constraintTop_toBottomOf="@id/text_view_cpu"/>
+
+    <TextView
+        android:id="@+id/text_view_cpu3"
+        android:layout_marginTop="15dp"
+        android:text=" Gpu temperature:"
+        android:textSize="10dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity=""
+        android:paddingTop="8dp"
+        android:layout_width="310dp"
+        android:background="@drawable/edt_layout"
+        android:layout_height="30dp"
+        android:textColorHint="@color/black"
+        android:drawableLeft="@drawable/ic_cpu_svgrepo_com"
+
+        app:layout_constraintStart_toStartOf="@id/container_cpu"
+        app:layout_constraintEnd_toEndOf="@id/container_cpu"
+        app:layout_constraintTop_toBottomOf="@id/text_view_cpu2"/>
+
+    <TextView
+        android:id="@+id/text_view_cpu4"
+        android:layout_marginTop="15dp"
+        android:text="  Ambient temperature:"
+        android:textSize="10dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity=""
+        android:paddingTop="8dp"
+        android:layout_width="310dp"
+        android:background="@drawable/edt_layout"
+        android:layout_height="30dp"
+        android:textColorHint="@color/black"
+        android:drawableLeft="@drawable/ic_thermometer_svgrepo_com"
+
+        app:layout_constraintStart_toStartOf="@id/container_cpu"
+        app:layout_constraintEnd_toEndOf="@id/container_cpu"
+        app:layout_constraintTop_toBottomOf="@id/text_view_cpu3"/>
+    <!--    <View-->
+    <!--        android:layout_width="280dp"-->
+    <!--        android:layout_height="4dp"-->
+    <!--        android:background="@color/black"-->
+    <!--        app:layout_constraintStart_toStartOf="@id/text_view_cpu"-->
+    <!--        app:layout_constraintEnd_toEndOf="@id/text_view_cpu"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/text_view_cpu"/>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

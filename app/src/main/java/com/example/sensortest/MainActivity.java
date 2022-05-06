@@ -2,23 +2,9 @@ package com.example.sensortest;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CpuUsageInfo;
-import android.os.HardwarePropertiesManager;
-import android.provider.SyncStateContract;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -26,22 +12,19 @@ import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
-import static android.os.HardwarePropertiesManager.DEVICE_TEMPERATURE_CPU;
-
 public class MainActivity extends AppCompatActivity {
 
-    private TextView textTemperatura;
-    private TextView falloText;
-    HardwarePropertiesManager teste;
+    private TextView textTempCPU;
+    private TextView textTempBattery;
+    TemperatureSource temperatureSource;
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -52,14 +35,23 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        textTemperatura = findViewById(R.id.temperatura);
-        falloText = findViewById(R.id.fallo);
+        textTempCPU = findViewById(R.id.text_view_cpu);
+        textTempBattery = findViewById(R.id.text_view_cpu2);
+
 
         Timer();
 
-
-        //falloText.setText(String.valueOf(teste));
     }
+
+    /** THERMAL QUE UTILIZAREMOS PARA CPU / GPU E BATTERY
+     * THERMAL 0 - TEMPERATURA TOTAL DA CPU aoss0-usr
+     * THERMAL 63 - TEMPERATURA DA BATERIA battery
+     */
+
+
+
+
+
 
     /**
      * Gets the number of cores available in this device, across all processors.
@@ -187,6 +179,26 @@ public class MainActivity extends AppCompatActivity {
         return 0;
     }
 
+    public static float batteryTemperature()
+    {
+        Process process;
+        try {
+            process = Runtime.getRuntime().exec("cat sys/class/thermal/thermal_zone1/temp");
+            process.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = reader.readLine();
+            if (line != null) {
+                float temp = Float.parseFloat(line);
+                return temp / 1000.0f;
+            } else {
+                return 45.0f;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0.0f;
+        }
+    }
+
     public static float cpuTemperature() {
         Process process;
         try {
@@ -206,11 +218,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public static String cpuTemperatureType() {
+        int i;
+        Process temp, type;
+        String line, line1;
+
+        try {
+
+            for (i = 0; i < 29; i++)
+            {
+                temp = Runtime.getRuntime().exec("cat sys/class/thermal/thermal_zone"+i+"/temp");
+                temp.waitFor();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(temp.getInputStream()));
+                line = reader.readLine();
+
+                type = Runtime.getRuntime().exec("cat sys/class/thermal/thermal_zone"+i+"/type");
+                type.waitFor();
+                BufferedReader reader2 = new BufferedReader(new InputStreamReader(type.getInputStream()));
+                line1 = reader2.readLine();
+
+                System.out.println(line1 + ": " + line  + "\n");
+            }
+
+
+            return "0";
+
+            /*if (line != null) {
+
+                return line;
+            } else {
+                return "vazio";
+            }*/
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+    }
+
     public void Timer(){
         Timer timer = new Timer();
         Task task = new Task();
 
-        timer.schedule(task, 1000, 1000);
+        timer.schedule(task, 1000, 5000);
 
     }
 
@@ -222,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     //Refresh Activity
                     temp_cpu();
+                    temp_battery();
                 }
             });
         }
@@ -235,15 +285,22 @@ public class MainActivity extends AppCompatActivity {
         {
             coreValues[i] = readCore(i);
             coreValues[i] = coreValues[i] * 100;
-            textTemperatura.append("NÚCLEOS " + coreValues[i] + "\n");
+            textTempCPU.append("NÚCLEOS " + coreValues[i] + "\n");
         }
     }
 
-    public void temp_battery(){}
+
+    public void temp_battery(){
+        temperatureSource = new TemperatureSource();
+        float battery = temperatureSource.tempBattery();
+        textTempBattery.setText(" Battery temperature: " + String.valueOf(battery) + " Cº");
+    }
+
 
 
     public void temp_cpu() {
-        float tempo = cpuTemperature();
-        textTemperatura.setText(String.valueOf(tempo) + " Cº");
+        temperatureSource = new TemperatureSource();
+        float cpu = temperatureSource.tempCPU();
+        textTempCPU.setText(" Cpu temperature: " + String.valueOf(cpu) + " Cº");
     }
 }
