@@ -7,7 +7,7 @@ public class TemperatureSource {
 
     Process temp;
     String lineTemp = "";
-    float tempCPU,tempBattery;
+    float tempCPU,tempBattery,tempGPU;
 
     public float tempCPU(){
 
@@ -73,19 +73,19 @@ public class TemperatureSource {
 
         try {
 
-            /*type = Runtime.getRuntime().exec("cat sys/class/thermal/thermal_zone63/type");
+            /*type = Runtime.getRuntime().exec("cat sys/class/thermal/thermal_zone10/type");
             type.waitFor();
             BufferedReader readType = new BufferedReader(new InputStreamReader(type.getInputStream()));
             lineType = readType.readLine();    */
 
-            temp = Runtime.getRuntime().exec("cat sys/class/thermal/thermal_zone63/temp");
+            temp = Runtime.getRuntime().exec("cat sys/class/thermal/thermal_zone10/temp");
             temp.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(temp.getInputStream()));
             lineTemp = reader.readLine();
 
             if (lineTemp != null) {
-                tempBattery = Float.parseFloat(lineTemp);
-                return tempBattery / 1000.0f;
+                tempGPU = Float.parseFloat(lineTemp);
+                return tempGPU / 1000.0f;
             } else {
                 return 200.f;
             }

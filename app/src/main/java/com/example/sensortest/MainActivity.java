@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textTempCPU;
     private TextView textTempBattery;
+    private TextView textTempGPU;
     TemperatureSource temperatureSource;
 
 
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         textTempCPU = findViewById(R.id.text_view_cpu);
         textTempBattery = findViewById(R.id.text_view_cpu2);
+        textTempGPU = findViewById(R.id.text_view_cpu3);
 
 
         Timer();
@@ -272,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
                     //Refresh Activity
                     temp_cpu();
                     temp_battery();
+                    temp_gpu();
                 }
             });
         }
@@ -302,5 +305,11 @@ public class MainActivity extends AppCompatActivity {
         temperatureSource = new TemperatureSource();
         float cpu = temperatureSource.tempCPU();
         textTempCPU.setText(" Cpu temperature: " + String.valueOf(cpu) + " Cº");
+    }
+
+    public void temp_gpu() {
+        temperatureSource = new TemperatureSource();
+        float gpu = temperatureSource.tempGPU();
+        textTempGPU.setText(" Gpu temperature: " + String.valueOf(gpu) + " Cº");
     }
 }
